@@ -1,0 +1,23 @@
+from os import terminal_size
+import gym
+
+print("Testing Solaris Env")
+env = gym.make("ALE/Solaris-v5")
+print("Solaris action space is: ",env.action_space)
+print("Solaris observation space is: ",env.observation_space.shape)
+state = env.reset()
+print("(1) Reset game")
+print("(2) state is: ",state, state.shape)
+new_state, reward, terminal, metadata = env.step(1)
+print("(3) stepped with action 1")
+print("(4) new state shape is: ",new_state.shape)
+print("(5) reward is: ",reward)
+print("(6) terminal is: ",terminal)
+print("(7) metadata is: ",metadata)
+print()
+print("(8) stepped with action 2")
+new_state, reward, terminal, metadata = env.step(2)
+print("(9) new state shape is: ",new_state.shape)
+print("(10) reward is: ",reward)
+print("(11) terminal is: ",terminal)
+print("(12) metadata is: ",metadata)

@@ -3,8 +3,9 @@ import random
 
 class Replay_Buffer():
   def __init__(self,buffer_size,batch_size):
-    assert batch_size < buffer_size, "Batch size must be smaller than buffer size"
     assert batch_size > 0, "Batch size must be greater than zero"
+    assert buffer_size > 0, "Buffer size must be greater than zero"
+    assert batch_size <= buffer_size, "Batch size must be smaller than buffer size"
     self._buffer = deque(maxlen=buffer_size)
     self.BATCH_SIZE = batch_size
     self._exp_count = 0
@@ -21,10 +22,10 @@ class Replay_Buffer():
   # samples from the buffer and processes the sample so it is in the desired form for the agent
   def sample(self):
     samples = self._sample_from_buffer()
-    processed = []
-    for st,at,rt,stprime in samples:
-      processed.append({"st":st,"at":at,"rt":rt,"stprime":stprime})
-    return processed
+    # processed = []
+    # for st,at,rt,stprime in samples:
+    #   processed.append({"st":st,"at":at,"rt":rt,"stprime":stprime})
+    return samples
 
   def _sample_from_buffer(self):
     if self._exp_count == 0:
