@@ -11,7 +11,7 @@ class Replay_Buffer():
     self._exp_count = 0
 
   # adds new experiences into the buffer in the desired format
-  # exp in form [st,at,rt,stprime]
+  # experience in form [st,at,rt,stprime]
   def add_exp(self,exp):
     self._buffer.append(exp)
     self._exp_count += 1

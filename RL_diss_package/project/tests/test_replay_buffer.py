@@ -1,12 +1,6 @@
 import pytest
 import numpy as np
 
-# from project.datastructures.Replay_Buffer import Replay_Buffer
-
-# current_dir = os.getcwd()
-# parent_dir = os.pardir
-# rb_dir = os.path.join(parent_dir,"Data_Structures")
-
 from project.data_structures.replay_buffer import Replay_Buffer
 class TestRB:
     exp1 = ["s1","r",10,"s2"]
@@ -45,9 +39,9 @@ class TestRB:
     def test_can_add_beyond_capacity(self):
         rb=Replay_Buffer(2,1)
         # empty buffer
-        # only one item in buffer
         rb.add_exp(self.exp1)
         rb.add_exp(self.exp2)
+        # capacity full here
         rb.add_exp(self.exp3)
 
     ''' Tests for sampling '''
@@ -81,6 +75,7 @@ class TestRB:
 
     ''' Functionality Tests'''
 
+    # test that adding experience pushes old from end of queue
     def test_queue(self):
         rb=Replay_Buffer(1,1)
         rb.add_exp(self.exp1)
