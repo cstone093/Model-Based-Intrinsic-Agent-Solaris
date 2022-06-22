@@ -41,7 +41,7 @@ class Solaris(Environment):
         self.reset_done = True
         processed = self.process_state(start_state)
         self.state = np.repeat(processed, self.stack_size, axis=2)
-        return np.array(self.state)
+        return np.array(self.state), processed
 
     def step(self, action):
         assert self.reset_done == True, "Environment must be reset before it can be stepped"
@@ -59,7 +59,7 @@ class Solaris(Environment):
 
         # return frame stacked states, reward earned, whether the current state is terminal,
         # whether the agent lost a life, and the non-processes new state
-        return np.array(self.state), reward, terminal, life_lost, new_state
+        return np.array(self.state), reward, terminal, life_lost, processed, new_state
 
     def get_actions_and_obs_shape(self):
         return self.env.action_space.n, self.observation_space

@@ -3,10 +3,10 @@ import numpy as np
 
 from project.data_structures.replay_buffer import Replay_Buffer
 class TestRB:
-    exp1 = ["s1","r",10,"s2"]
-    exp2 = ["s2","r",9,"s3"]
-    exp3 = ["s3","r",8,"s4"]
-
+    exp1 = ["s1",1,"r","s2",False]
+    exp2 = ["s2",1,"r","s3",False]
+    exp3 = ["s3",3,"r","s4",False]
+    # state, action, reward, new state, terminal
 
     ''' Tests for creation of buffer '''
     # Test that buffer can be instantiated
