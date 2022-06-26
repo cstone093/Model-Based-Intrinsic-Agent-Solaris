@@ -30,7 +30,7 @@ class Replay_Buffer():
         while True:
           index = random.randint(0,self._exp_count)
           if index < self.STACK_SIZE:
-
+            pass
     # Need to find index, look four to left (if able to) and then check that no terminals
     # if terminal redraw index
     # else concatenate into sample
