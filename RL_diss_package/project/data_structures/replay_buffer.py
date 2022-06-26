@@ -30,6 +30,7 @@ class Replay_Buffer():
     if self._exp_count == 0 or self._exp_count < self.BATCH_SIZE:
       raise Exception("Experience must be added before it is sampled")
     else:
+<<<<<<< HEAD
       for _ in range(self.BATCH_SIZE):
         sample_drawn = False
         while not sample_drawn:
@@ -45,3 +46,16 @@ class Replay_Buffer():
               sample.append(sample_frame)
         samples.append(sample)      
     return samples
+=======
+      for i in range(self.BATCH_SIZE):
+        while True:
+          index = random.randint(0,self._exp_count)
+          if index < self.STACK_SIZE:
+            pass
+    # Need to find index, look four to left (if able to) and then check that no terminals
+    # if terminal redraw index
+    # else concatenate into sample
+    return samples
+
+      
+>>>>>>> be8dd7c86f797b258f927b93215e38ac32337272
