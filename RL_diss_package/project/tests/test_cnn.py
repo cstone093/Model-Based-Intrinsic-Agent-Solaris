@@ -40,7 +40,7 @@ class TestCNN:
 
         q = Q_Value_Function(solaris_hyp,a,s)
 
-        rb=Replay_Buffer(5,2)
+        rb=Replay_Buffer(5,2,1)
         rb.add_exp(exp1)
         rb.add_exp(exp2)
         rb.add_exp(exp3)
