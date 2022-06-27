@@ -81,7 +81,7 @@ class Q_Value_Function:
         if np.random.uniform(0,1) <= self.epsilon:
             return np.random.randint(self.A_SIZE)
         else:
-            values = self.local_model.predict(state.reshape(-1, *state.shape))
+            values = self.local_model.predict(state)
             return np.argmax(values)
 
     def set_weights(self,model,weights):

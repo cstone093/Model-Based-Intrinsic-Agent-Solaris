@@ -1,6 +1,6 @@
 from project.data_structures.replay_buffer import Replay_Buffer
 from project.policies.q_value_function import Q_Value_Function
-from project.hyperparameters.DQN_HP import solaris_hyp
+from project.hyperparameters.dqn_hyp import solaris_hyp
 from project.environments.solaris import Solaris
 import numpy as np
 
@@ -19,7 +19,7 @@ class TestCNN:
 
         q = Q_Value_Function(solaris_hyp,a,s)
         action = q.choose_action(state)
-        assert action > 0 and action < a
+        assert action >= 0 and action < a
 
     def test_learn(self):
         env = Solaris()
@@ -46,6 +46,8 @@ class TestCNN:
         rb.add_exp(exp3)
 
         sample = rb.sample()
+        # [[exp_X][exp_X]]
+        # i.e. [[state, action, reward, new state, terminal],[state, action, reward, new state, terminal]]
 
         q.learn(sample)
 
