@@ -9,17 +9,29 @@ class TestRB:
     stacked_state, top_state = env.reset()
     a,s = env.get_actions_and_obs_shape()
 
-    _, reward, term, _, new_top_state, _ = env.step(1)
-    exp1 = [top_state,1,reward,new_top_state,term]
+    # curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
+    a = 1
+    _ , reward, term, _ ,  new_top_state, _ = env.step(a)
+    exp1 = [top_state,a,reward,new_top_state,term]
 
     top_state = new_top_state
-    _, reward, term, _, new_top_state, _ = env.step(2)
-    exp2 = [top_state,1,reward,new_top_state,term]
+
+    a = 2
+    _ , reward, term, _ ,  new_top_state, _= env.step(a)
+    exp2 = [top_state,a,reward,new_top_state,term]
 
     top_state = new_top_state
-    _, reward, term, _, new_top_state, _ = env.step(3)
-    exp3 = [top_state,1,reward,new_top_state,term]
-    # state, action, reward, new state, terminal
+
+    a = 3
+    _ , reward, term, _ ,  new_top_state, _ = env.step(a)
+    exp3 = [top_state,a,reward,new_top_state,term]
+
+
+    a = 4
+    _ , reward, term, _ ,  new_top_state, _ = env.step(a)
+    exp4 = [top_state,a,reward,new_top_state,False]
+
+
 
     ''' Tests for creation of buffer '''
     # Test that buffer can be instantiated
@@ -69,51 +81,35 @@ class TestRB:
         with pytest.raises(Exception):
             rb.sample()
 
-    # def test_sample_1(self):
-    #     rb=Replay_Buffer(2,1,1)
-    #     # empty buffer
-    #     # only one item in buffer
-    #     rb.add_exp(self.exp1)
-    #     sample = rb.sample()
-    #     assert len(sample) == 1
-    #     assert sample == [[self.exp1]]
+    def sample_hyp(self,buffer,batch,stack,exp):
+        rb=Replay_Buffer(buffer,batch,stack)
+        for i in range(exp):
+            rb.add_exp(self.exp1)
+        states,actions,rewards,new_states,terminals = rb.sample()
+        assert states.shape == (batch, self.s[0], self.s[1], stack)
+        assert actions.shape[0] == batch
+        assert rewards.shape[0] == batch
+        assert new_states.shape == (batch, self.s[0], self.s[1], stack)
+        assert terminals.shape[0] == batch
 
-    # def test_sample_2(self):
-    #     rb=Replay_Buffer(2,2,1)
-    #     # empty buffer
-    #     # only one item in buffer
-    #     rb.add_exp(self.exp1)
-    #     rb.add_exp(self.exp1)
-    #     sample = rb.sample()
-    #     assert len(sample) == 2
 
-    #     assert sample == [[self.exp1],[self.exp1]]
+    def test_sample(self):
+        self.sample_hyp(10,3,2,8)
 
+    # Test that can add and sample beyond size of buffer
+    def test_sample_1(self):
+        self.sample_hyp(10,3,2,13)
+
+    # Test stack size 1
+    def test_sample_2(self):
+        self.sample_hyp(10,3,1,8)
+    
+    # Test stack size 0
     def test_sample_3(self):
-        rb=Replay_Buffer(10,2,3)
-        # empty buffer
-        # only one item in buffer
-        rb.add_exp(self.exp1)
-        rb.add_exp(self.exp1)
-        rb.add_exp(self.exp1)
-        rb.add_exp(self.exp1)
-        rb.add_exp(self.exp1)
-        rb.add_exp(self.exp1)
-        rb.add_exp(self.exp1)
-        rb.add_exp(self.exp1)
-        sample = rb.sample()
+        with pytest.raises(AssertionError):
+            self.sample_hyp(10,3,0,8)
 
-        print(sample[0].shape)
-        assert len(sample) == 1
-
-        # assert sample == [[self.exp1,self.exp1]]
-
-    ''' Functionality Tests'''
-
-    # test that adding experience pushes old from end of queue
-    def test_queue(self):
-        rb=Replay_Buffer(1,1,1)
-        rb.add_exp(self.exp1)
-        assert rb.sample() == [[self.exp1]]
-        rb.add_exp(self.exp2)
-        assert rb.sample() == [[self.exp2]]
+    # Test batch size 0
+    def test_sample_4(self):
+        with pytest.raises(AssertionError):
+            self.sample_hyp(10,0,2,8)

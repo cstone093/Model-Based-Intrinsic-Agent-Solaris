@@ -8,6 +8,7 @@ class Replay_Buffer():
   def __init__(self,buffer_size,batch_size,stack_size):
     assert batch_size > 0, "Batch size must be greater than zero"
     assert buffer_size > 0, "Buffer size must be greater than zero"
+    assert stack_size > 0, "Stack size must be greater than zero"
     assert batch_size <= buffer_size, "Batch size must be smaller than buffer size"
     assert stack_size <= buffer_size, "Stack size must be smaller than buffer size"
     # self._buffer = deque(maxlen=buffer_size)
@@ -28,8 +29,6 @@ class Replay_Buffer():
   # to separate buffers
   def add_exp(self,exp):
     st,at,rt,stprime,term = exp
-    print("info:",st.shape,at,rt,term)
-    print("Index is: ",self._new_index)
     self._states[self._new_index] = st.squeeze()
     self._actions[self._new_index] = at
     self._rewards[self._new_index] = rt
@@ -46,44 +45,40 @@ class Replay_Buffer():
       raise Exception("Sufficient experience must be added before it is sampled")
     
     else:
-      sample_states = np.empty((self.BATCH_SIZE,self.STACK_SIZE,84,84),dtype=np.uint8)
-      sample_actions = np.empty(self.BATCH_SIZE,dtype=np.int8)
-      sample_rewards = np.empty(self.BATCH_SIZE,dtype=np.float32)
-      sample_next_states = np.empty((self.BATCH_SIZE,self.STACK_SIZE,84,84),dtype=np.uint8)
-      sample_terminals = np.empty(self.BATCH_SIZE,dtype=np.bool8)
-
-      possible_ixs = np.arange(self.STACK_SIZE,self._exp_count)
-      possible_ixs = possible_ixs[
-            (possible_ixs < self._new_index - 1)
-            | (possible_ixs - self.STACK_SIZE > self._new_index - 1)]
-      print(possible_ixs)
-      if len(possible_ixs)==0:
-        raise Exception("Sufficient experience must be added before it is sampled")
+      index_options = np.arange(self.STACK_SIZE,self._exp_count)
+      index_options = index_options[
+            (index_options < self._new_index - 1)
+            | (index_options - self.STACK_SIZE > self._new_index - 1)]
+      if len(index_options)==0:
+        raise Exception("Sufficient experience must be added before it is sampled") # Need to handle this
       else:
-        stacks = []
-        for number in np.arange(self.STACK_SIZE, 0, -1):
-            stacks.append(possible_ixs - number)
+        states_stacked = []
+        for frame_i in np.arange(self.STACK_SIZE, 0, -1):
+            states_stacked.append(index_options - frame_i)
 
-        possible_ixs = possible_ixs[
-            np.logical_not(self._terminals[np.stack(stacks, axis=1)].any(axis=1))
+        # removes indexes where the stacked states contain a terminal state
+        index_options = index_options[
+            np.logical_not(self._terminals[np.stack(states_stacked, axis=1)].any(axis=1))
         ]
-        # Choose a random batch of indices
-        indices = np.random.choice(possible_ixs, self.BATCH_SIZE)
+        if len(index_options)==0:
+          raise Exception("Sufficient experience must be added before it is sampled") # Need to handle this
+        # select randomly, a state from the processed list of  options
+        chosen_exp = np.random.choice(index_options, self.BATCH_SIZE)
 
-        states = np.array(
-            [self._states[index - self.STACK_SIZE : index, ...] for index in indices]
+        ss = np.array(
+            [self._states[exp - self.STACK_SIZE : exp, ...] for exp in chosen_exp]
         )
-        future_states = np.array(
-            [self._states[index - self.STACK_SIZE + 1 : index + 1, ...] for index in indices]
+        s_primes = np.array(
+            [self._states[exp - self.STACK_SIZE + 1 : exp + 1, ...] for exp in chosen_exp]
         )
 
         # Transpose states from (batch_size, stack_size, 84, 84) to (batch_size, 84, 84, stack_size)
         return (
-            np.transpose(states, axes=(0, 2, 3, 1)),
-            self._actions[indices],
-            self._rewards[indices],
-            np.transpose(future_states, axes=(0, 2, 3, 1)),
-            self._terminals[indices],
+            np.transpose(ss, axes=(0, 2, 3, 1)),
+            self._actions[chosen_exp],
+            self._rewards[chosen_exp],
+            np.transpose(s_primes, axes=(0, 2, 3, 1)),
+            self._terminals[chosen_exp],
         )
     
     # Need to make the code for this much tidier

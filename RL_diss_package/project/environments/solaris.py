@@ -18,7 +18,8 @@ class Solaris(Environment):
         crop_borders=(0,0,0,0)
     ) -> None:
         self.env = gym.make(env_name, render_mode="human" if evaluation else None)
-        self.state = None
+        self.curr_stacked_state = None
+        self.curr_top_state = None
         self.do_crop = do_crop
         self.crop_borders = crop_borders
         self.stack_size = stack_size
@@ -40,26 +41,23 @@ class Solaris(Environment):
         start_state = self.env.reset()
         self.reset_done = True
         processed = self.process_state(start_state)
-        self.state = np.repeat(processed, self.stack_size, axis=2)
-        return np.array(self.state), processed
+        self.curr_stacked_state = np.repeat(processed, self.stack_size, axis=2)
+        return np.array(self.curr_stacked_state), processed
 
+    # returns curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
     def step(self, action):
         assert self.reset_done == True, "Environment must be reset before it can be stepped"
-        new_state, reward, terminal, metadata = self.env.step(action)
-        # print(f"step taken returned {reward},{terminal},{metadata}")
+        unprocessed_new_state, reward, terminal, metadata = self.env.step(action)
         life_lost = True if metadata["lives"] < self.last_lives else False
         if metadata["lives"] == 0:
             terminal = True
         self.last_lives = metadata["lives"]
-
-        processed = self.process_state(new_state)
-
-        # for stack_size 3
-        self.state = np.append(self.state[:, :, 1:], processed, axis=2)
+        self.curr_top_state = self.process_state(unprocessed_new_state)
+        self.curr_stacked_state = np.append(self.curr_stacked_state[:, :, 1:], self.curr_top_state, axis=2)
 
         # return frame stacked states, reward earned, whether the current state is terminal,
         # whether the agent lost a life, and the non-processes new state
-        return np.array(self.state), reward, terminal, life_lost, processed, new_state
+        return np.array(self.curr_stacked_state), reward, terminal, life_lost, self.curr_top_state, unprocessed_new_state
 
     def get_actions_and_obs_shape(self):
         return self.env.action_space.n, self.observation_space

@@ -46,11 +46,12 @@ class TestEnv:
         a,o = env.get_actions_and_obs_shape()
 
         stacked_state, top_state = env.reset()
-        new_s, reward, term, life_lost, non_stacked_state, unprocessed_state = env.step(1)
 
-        assert new_s.shape == o
+        #  curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
+        stacked_state, reward, term, life_lost, top_state, _ = env.step(1)
+
+        assert stacked_state.shape == o
         assert isinstance(reward,float)
         assert isinstance(term,bool)
         assert isinstance(life_lost,bool)
-        assert non_stacked_state.shape == (r[0],r[1],1) 
-        assert unprocessed_state.shape == (210,160,3) 
+        assert top_state.shape == (r[0],r[1],1) 

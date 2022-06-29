@@ -26,7 +26,8 @@ class TestCNN:
         
         stacked_state, top_state = env.reset()
         a,s = env.get_actions_and_obs_shape()
-
+        #  curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
+        # TODO NEED TO UPDATE THIS
         _, reward, term, _, new_top_state, _ = env.step(1)
         exp1 = [top_state,1,reward,new_top_state,term]
 
