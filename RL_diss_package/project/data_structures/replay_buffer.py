@@ -81,4 +81,9 @@ class Replay_Buffer():
             self._terminals[chosen_exp],
         )
     
-    # Need to make the code for this much tidier
+  def save_state(self):
+    raise(NotImplementedError)
+
+
+  def load_state(self):
+    raise(NotImplementedError)

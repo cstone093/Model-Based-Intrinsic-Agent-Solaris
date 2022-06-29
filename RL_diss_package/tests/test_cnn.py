@@ -25,34 +25,48 @@ class TestCNN:
         env = Solaris()
         
         stacked_state, top_state = env.reset()
-        a,s = env.get_actions_and_obs_shape()
-        #  curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
-        # TODO NEED TO UPDATE THIS
-        _, reward, term, _, new_top_state, _ = env.step(1)
-        exp1 = [top_state,1,reward,new_top_state,term]
-
-        top_state = new_top_state
-        _, reward, term, _, new_top_state, _ = env.step(2)
-        exp2 = [top_state,1,reward,new_top_state,term]
-
-        top_state = new_top_state
-        _, reward, term, _, new_top_state, _ = env.step(3)
-        exp3 = [top_state,1,reward,new_top_state,term]
+        a_shape,s = env.get_actions_and_obs_shape()
+        # curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
+        a = 1
+        _ , reward, term, _ ,  new_top_state, _ = env.step(a)
+        exp1 = [top_state,a,reward,new_top_state,term]
 
         q = Q_Value_Function(solaris_hyp,a,s)
+        rb=Replay_Buffer(20,3,4)
 
-        rb=Replay_Buffer(5,2,1)
-        rb.add_exp(exp1)
-        rb.add_exp(exp2)
-        rb.add_exp(exp3)
+        for _ in range(12):
+            rb.add_exp(exp1)
 
-        sample = rb.sample()
-        # [[exp_X][exp_X]]
-        # i.e. [[state, action, reward, new state, terminal],[state, action, reward, new state, terminal]]
+        states,actions,rewards,new_states,terminals = rb.sample()
 
-        q.learn(sample)
+        q.learn(states,actions,rewards,new_states,terminals)
 
-        # NEED TO CHECK that exception is raised if not enough experience - and handle this in cnn 
+    def test_update_target(self):
+        env = Solaris()
+        
+        stacked_state, top_state = env.reset()
+        a,s = env.get_actions_and_obs_shape()
 
-    def test_forward(self):
-        pass
+        q = Q_Value_Function(solaris_hyp,a,s)
+        q.update_target_model()
+
+    def test_run(self):
+        env = Solaris()
+        
+        stacked_state, top_state = env.reset()
+        a,s = env.get_actions_and_obs_shape()
+        
+        q = Q_Value_Function(solaris_hyp,a,s)
+        rb=Replay_Buffer(500,20,4)
+
+        for _ in range(1000):
+            action = q.choose_action(stacked_state)
+            _ , reward, term, _ ,  new_top_state, _ = env.step(action)
+            exp = top_state,action,reward,new_top_state,term
+
+            rb.add_exp(exp)
+            top_state = new_top_state
+
+        states,actions,rewards,new_states,terminals = rb.sample()
+
+        q.learn(states,actions,rewards,new_states,terminals)
