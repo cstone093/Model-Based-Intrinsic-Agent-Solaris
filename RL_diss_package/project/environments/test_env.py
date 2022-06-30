@@ -1,17 +1,14 @@
-
 from PIL import Image
 import numpy as np
 import gym
 from project.environments.environment import Environment
 
-
-class Solaris(Environment):
-
+class Test_Env(Environment):
     def __init__(
         self,
-        env_name="ALE/Solaris-v5",
-        stack_size=4,
-        do_rescale = True,
+        env_name="ALE/Pong",
+        stack_size=1,
+        do_rescale = False,
         rescale_dims=(84,84),
         evaluation=False,
         do_crop=False,

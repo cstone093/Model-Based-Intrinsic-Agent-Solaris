@@ -1,5 +1,5 @@
 
-solaris_hyp = {
+test_hyp = {
     "BUFFER_SIZE":1_000_000,
     "BATCH_SIZE":32,
     "EPs":2000,
@@ -17,11 +17,10 @@ solaris_hyp = {
     # "DROPOUT":0.2,
     "INIT_LEARNING_RATE":0.001,
 
-    "MAX_EPISODES": 1000000,
     "NUM_STEPS": 7500,
     "STACK_SIZE": 4,
     "MAX_EP_ACTIONS":20_000, # Need to adjust this
     
-    "RENDER_EVERY_N": 100000,  # Render gif and save model every N frames
+    "RENDER_EVERY_N": 1000,  # Render gif and save model every N frames
     "UPDATE_EVERY_N": 100,  # Print update every N episodes
 }
