@@ -43,15 +43,20 @@ class Environment:
         assert self.reset_done == True, "Environment must be reset before it can be stepped"
         unprocessed_new_state, reward, terminal, metadata = self.env.step(action)
         life_lost = True if metadata["lives"] < self.last_lives else False
-        if metadata["lives"] == 0:
-            terminal = True
+        # if metadata["lives"] == 0:
+        #     terminal = True
         self.last_lives = metadata["lives"]
         self.curr_top_state = self.process_state(unprocessed_new_state)
         self.curr_stacked_state = np.append(self.curr_stacked_state[:, :, 1:], self.curr_top_state, axis=2)
 
+        # TODO store unprocessed for each episode so that a gif can be made
+
         # return frame stacked states, reward earned, whether the current state is terminal,
         # whether the agent lost a life, and the non-processes new state
-        return np.array(self.curr_stacked_state), reward, terminal, life_lost, self.curr_top_state, unprocessed_new_state
+        return np.array(self.curr_stacked_state), reward, terminal, life_lost, self.curr_top_state
 
     def get_actions_and_obs_shape(self):
         return self.env.action_space.n, self.observation_space
+
+    def save_ep_gif(self):
+        raise(NotImplementedError)

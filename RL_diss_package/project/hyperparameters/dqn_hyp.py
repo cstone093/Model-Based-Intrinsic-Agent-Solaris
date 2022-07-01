@@ -5,6 +5,8 @@ solaris_hyp = {
     "EPs":2000,
 
     "GAMMA":0.95,
+    "REPLAY_FREQ":4,
+    "UPDATE_TARGET":1_000,
 
     "EPS_FRAMES_INIT":50_000,
     "EPS_FRAMES_INTER":1_000_000,
@@ -23,5 +25,5 @@ solaris_hyp = {
     "MAX_EP_ACTIONS":20_000, # Need to adjust this
     
     "RENDER_EVERY_N": 100000,  # Render gif and save model every N frames
-    "UPDATE_EVERY_N": 100,  # Print update every N episodes
+    "UPDATE_EVERY_N": 10000,  # Print update every N episodes
 }

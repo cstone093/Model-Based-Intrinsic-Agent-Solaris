@@ -11,24 +11,24 @@ class TestRB:
 
     # curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
     a = 1
-    _ , reward, term, _ ,  new_top_state, _ = env.step(a)
+    _ , reward, term, _ ,  new_top_state = env.step(a)
     exp1 = [top_state,a,reward,new_top_state,term]
 
     top_state = new_top_state
 
     a = 2
-    _ , reward, term, _ ,  new_top_state, _= env.step(a)
+    _ , reward, term, _ ,  new_top_state= env.step(a)
     exp2 = [top_state,a,reward,new_top_state,term]
 
     top_state = new_top_state
 
     a = 3
-    _ , reward, term, _ ,  new_top_state, _ = env.step(a)
+    _ , reward, term, _ ,  new_top_state = env.step(a)
     exp3 = [top_state,a,reward,new_top_state,term]
 
 
     a = 4
-    _ , reward, term, _ ,  new_top_state, _ = env.step(a)
+    _ , reward, term, _ ,  new_top_state= env.step(a)
     exp4 = [top_state,a,reward,new_top_state,False]
 
 

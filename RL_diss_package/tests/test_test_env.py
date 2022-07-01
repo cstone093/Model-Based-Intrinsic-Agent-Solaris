@@ -47,7 +47,7 @@ class TestTestEnv:
         stacked_state, top_state = env.reset()
 
         #  curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
-        stacked_state, reward, term, life_lost, top_state, _ = env.step(1)
+        stacked_state, reward, term, life_lost, top_state = env.step(1)
 
         assert stacked_state.shape == o
         assert isinstance(reward,float)

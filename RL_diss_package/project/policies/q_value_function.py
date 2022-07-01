@@ -63,7 +63,7 @@ class Q_Value_Function:
     def get_epsilon(self):
         if self.actions_performed < self.hyp["EPS_FRAMES_INIT"]:
             return self.hyp["EPS_STEPS_INIT"]
-        elif self.actions_performed < self.self.hyp["EPS_FRAMES_INIT"] + self.hyp["EPS_FRAMES_INTER"]:
+        elif self.actions_performed < self.hyp["EPS_FRAMES_INIT"] + self.hyp["EPS_FRAMES_INTER"]:
             return self.eps_gradient_1 * self.actions_performed + self.eps_intercept_1
         else:
             return self.eps_gradient_2 * self.actions_performed + self.eps_intercept_2

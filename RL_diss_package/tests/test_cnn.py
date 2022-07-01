@@ -28,7 +28,7 @@ class TestCNN:
         a_shape,s = env.get_actions_and_obs_shape()
         # curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
         a = 1
-        _ , reward, term, _ ,  new_top_state, _ = env.step(a)
+        _ , reward, term, _ ,  new_top_state = env.step(a)
         exp1 = [top_state,a,reward,new_top_state,term]
 
         q = Q_Value_Function(solaris_hyp,a,s)
@@ -61,7 +61,7 @@ class TestCNN:
 
         for _ in range(1000):
             action = q.choose_action(stacked_state)
-            _ , reward, term, _ ,  new_top_state, _ = env.step(action)
+            _ , reward, term, _ ,  new_top_state = env.step(action)
             exp = top_state,action,reward,new_top_state,term
 
             rb.add_exp(exp)
