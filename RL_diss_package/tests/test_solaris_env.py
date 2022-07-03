@@ -1,19 +1,19 @@
-
 import pytest
 import numpy as np
 
-from project.environments.solaris import Solaris
+from project.environments.environment import Environment
+from project.hyperparameters.dqn_hyp import solaris_hyp
 
 class TestEnv:
 
     # Environment init
     def test_env_init(self):
-        env = Solaris()
+        env = Environment(hyp=solaris_hyp)
 
     def test_env_obs(self):
         r = (84,84)
         stack = 4
-        env = Solaris(rescale_dims=r,stack_size=stack)
+        env = Environment(hyp=solaris_hyp)
         
         a,o = env.get_actions_and_obs_shape()
         assert a == 18
@@ -22,7 +22,7 @@ class TestEnv:
     def test_reset(self):
         r = (84,84)
         stack = 4
-        env = Solaris(rescale_dims=r,stack_size=stack)
+        env = Environment(hyp=solaris_hyp)
         
         a,o = env.get_actions_and_obs_shape()
 
@@ -34,14 +34,14 @@ class TestEnv:
     def test_no_step_before_reset(self):
         r = (84,84)
         stack = 4
-        env = Solaris(rescale_dims=r,stack_size=stack)
+        env = Environment(hyp=solaris_hyp)
         with pytest.raises(AssertionError):
             env.step(1)
     
     def test_step(self):
         r = (84,84)
         stack = 4
-        env = Solaris(rescale_dims=r,stack_size=stack)
+        env = Environment(hyp=solaris_hyp)
         
         a,o = env.get_actions_and_obs_shape()
 

@@ -2,9 +2,10 @@ import pytest
 import numpy as np
 
 from project.data_structures.replay_buffer import Replay_Buffer
-from project.environments.solaris import Solaris
+from project.environments.environment import Environment
+from project.hyperparameters.dqn_hyp import solaris_hyp
 class TestRB:
-    env = Solaris()
+    env = Environment(hyp=solaris_hyp)
         
     stacked_state, top_state = env.reset()
     a,s = env.get_actions_and_obs_shape()

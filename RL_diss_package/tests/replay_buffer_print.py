@@ -1,13 +1,14 @@
+from msilib.schema import Environment
 from project.policies.q_value_function import Q_Value_Function
 from project.data_structures.replay_buffer import Replay_Buffer
 from project.hyperparameters.dqn_hyp import solaris_hyp
-from project.environments.solaris import Solaris
+from project.environments.environment import Environment
 
 exp1 = ["s1",1,"r","s2",False]
 exp2 = ["s2",1,"r","s3",False]
 exp3 = ["s3",3,"r","s4",False]
 
-env = Solaris()
+env = Environment(hyp=solaris_hyp)
         
 stacked_state, top_state = env.reset()
 a,s = env.get_actions_and_obs_shape()

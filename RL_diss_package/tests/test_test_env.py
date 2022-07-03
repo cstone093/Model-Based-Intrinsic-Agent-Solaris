@@ -1,18 +1,19 @@
 import pytest
 import numpy as np
 
-from project.environments.test_env import Test_Env
+from project.environments.environment import Environment
+from project.hyperparameters.test_hyp import test_hyp
 
 class TestTestEnv:
 
     # Environment init
     def test_env_init(self):
-        env = Test_Env()
+        env = Environment(hyp=test_hyp)
 
     def test_env_obs(self):
         r = (84,84)
         stack = 4
-        env = Test_Env(rescale_dims=r,stack_size=stack)
+        env = Environment(hyp=test_hyp)
         
         a,o = env.get_actions_and_obs_shape()
         assert a == 6
@@ -21,7 +22,7 @@ class TestTestEnv:
     def test_reset(self):
         r = (84,84)
         stack = 4
-        env = Test_Env(rescale_dims=r,stack_size=stack)
+        env = Environment(hyp=test_hyp)
         
         a,o = env.get_actions_and_obs_shape()
 
@@ -33,14 +34,14 @@ class TestTestEnv:
     def test_no_step_before_reset(self):
         r = (84,84)
         stack = 4
-        env = Test_Env(rescale_dims=r,stack_size=stack)
+        env = Environment(hyp=test_hyp)
         with pytest.raises(AssertionError):
             env.step(1)
     
     def test_step(self):
         r = (84,84)
         stack = 4
-        env = Test_Env(rescale_dims=r,stack_size=stack)
+        env = Environment(hyp=test_hyp)
         
         a,o = env.get_actions_and_obs_shape()
 

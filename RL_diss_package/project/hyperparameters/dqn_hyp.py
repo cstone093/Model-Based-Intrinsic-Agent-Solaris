@@ -1,8 +1,15 @@
 
 solaris_hyp = {
+    "DO_CROP":False,
+    "DO_RESCALE":True,
+    "RESCALE_DIMS":(84,84),
+    "EVALUATION":False,
+    "CROP":(0,0,0,0),
+
     "BUFFER_SIZE":1_000_000,
     "BATCH_SIZE":32,
-    "EPs":2000,
+    # "EPs":2000,
+    "ENV":"Solaris-v4",
 
     "GAMMA":0.95,
     "REPLAY_FREQ":4,

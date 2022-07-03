@@ -1,41 +1,44 @@
 from PIL import Image
 import numpy as np
 import gym
+import os
+import imageio
 
 class Environment:
     def __init__(
-        self,
-        env_name,
-        stack_size=1,
-        do_rescale = False,
-        rescale_dims=(84,84),
-        evaluation=False,
-        do_crop=False,
-        crop_borders=(0,0,0,0)
+        self,hyp
     ) -> None:
-        assert not env_name == None, "An environment name must be specified"
-        self.env = gym.make(env_name, render_mode="human" if evaluation else None)
+        self.hyp = hyp
+        assert not self.hyp["ENV"] == None, "An environment name must be specified"
+        self.env = gym.make(self.hyp["ENV"], render_mode="human" if self.hyp["EVALUATION"] else None)
+
         self.curr_stacked_state = None
         self.curr_top_state = None
-        self.do_crop = do_crop
-        self.crop_borders = crop_borders
-        self.stack_size = stack_size
-        self.do_rescale = do_rescale
-        self.rescale_dims = rescale_dims
-        self.observation_space = (self.rescale_dims[0], self.rescale_dims[1],self.stack_size)
+
+        self.actions_space, self.observation_space = self.get_actions_and_obs_shape()
+
         self.last_lives = 3
         self.reset_done = False
+        self.new_ep = True
+
+        base_dir = os.getcwd()
+
+        self.gif_dir = os.path.join(base_dir, "gif")
+
+        self.ep_states = []
 
     def process_state(self, state):
         # Converts the RGB input of (210, 160, 3) to grayscale (84, 84, 1)
-        grayscaled = Image.fromarray(state).convert("L").resize(self.rescale_dims)
-        return np.array(grayscaled, dtype=np.uint8)[..., np.newaxis]
+        if self.hyp["DO_RESCALE"]:
+            state = Image.fromarray(state).convert("L").resize(self.hyp["RESCALE_DIMS"])
+        return np.array(state, dtype=np.uint8)[..., np.newaxis]
 
     def reset(self):
         start_state = self.env.reset()
         self.reset_done = True
         processed = self.process_state(start_state)
-        self.curr_stacked_state = np.repeat(processed, self.stack_size, axis=2)
+        self.curr_stacked_state = np.repeat(processed, self.hyp["STACK_SIZE"], axis=2)
+        self.clear_ep_buffer()
         return np.array(self.curr_stacked_state), processed
 
     # returns curr_stacked_state, reward, terminal, life_lost, curr_top_state, unprocessed_new_state
@@ -48,15 +51,39 @@ class Environment:
         self.last_lives = metadata["lives"]
         self.curr_top_state = self.process_state(unprocessed_new_state)
         self.curr_stacked_state = np.append(self.curr_stacked_state[:, :, 1:], self.curr_top_state, axis=2)
-
-        # TODO store unprocessed for each episode so that a gif can be made
+        
+        # Store all states for an episode so a gif can be greated if called by the agent
+        self.ep_states.append(unprocessed_new_state)
 
         # return frame stacked states, reward earned, whether the current state is terminal,
         # whether the agent lost a life, and the non-processes new state
         return np.array(self.curr_stacked_state), reward, terminal, life_lost, self.curr_top_state
 
     def get_actions_and_obs_shape(self):
-        return self.env.action_space.n, self.observation_space
+        return self.env.action_space.n, (self.hyp["RESCALE_DIMS"][0],self.hyp["RESCALE_DIMS"][1],self.hyp["STACK_SIZE"])
 
-    def save_ep_gif(self):
+    def clear_ep_buffer(self):
+        self.ep_states = []
+
+    def save_ep_gif(self,ep_no):
+        # Create gifs from all saved sets of frames
+        if np.shape(self.ep_states) == 0:
+            print("No frames found!")
+        else:
+            name = "./gif" + "-" + str(ep_no) + ".gif"
+            path = os.path.join(self.gif_dir, name)
+            print(f"Length of episode was {len(self.ep_states)}")
+            frames = [
+                np.array(Image.fromarray(frame).resize((240, 315)), dtype=np.uint8)
+                for frame in self.ep_states
+            ]
+            imageio.mimsave(
+                path,
+                frames,
+                format="GIF",
+                fps=60,
+            )
+            print(f"Episode {ep_no} gif created")
+
+    def save_state(self):
         raise(NotImplementedError)

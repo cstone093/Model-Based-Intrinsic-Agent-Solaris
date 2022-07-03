@@ -1,18 +1,18 @@
 from project.data_structures.replay_buffer import Replay_Buffer
 from project.policies.q_value_function import Q_Value_Function
 from project.hyperparameters.dqn_hyp import solaris_hyp
-from project.environments.solaris import Solaris
+from project.environments.environment import Environment
 import numpy as np
 
 class TestCNN:
 
     def test_created(self):
-        env = Solaris()
+        env = Environment(hyp=solaris_hyp)
         a,s = env.get_actions_and_obs_shape()
         q = Q_Value_Function(solaris_hyp,a,s) 
     
     def test_act(self):
-        env = Solaris()
+        env = Environment(hyp=solaris_hyp)
         
         state = env.reset()
         a,s = env.get_actions_and_obs_shape()
@@ -22,7 +22,7 @@ class TestCNN:
         assert action >= 0 and action < a
 
     def test_learn(self):
-        env = Solaris()
+        env = Environment(hyp=solaris_hyp)
         
         stacked_state, top_state = env.reset()
         a_shape,s = env.get_actions_and_obs_shape()
@@ -42,7 +42,7 @@ class TestCNN:
         q.learn(states,actions,rewards,new_states,terminals)
 
     def test_update_target(self):
-        env = Solaris()
+        env = Environment(hyp=solaris_hyp)
         
         stacked_state, top_state = env.reset()
         a,s = env.get_actions_and_obs_shape()
@@ -51,7 +51,7 @@ class TestCNN:
         q.update_target_model()
 
     def test_run(self):
-        env = Solaris()
+        env = Environment(hyp=solaris_hyp)
         
         stacked_state, top_state = env.reset()
         a,s = env.get_actions_and_obs_shape()
