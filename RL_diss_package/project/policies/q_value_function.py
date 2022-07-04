@@ -80,11 +80,8 @@ class Q_Value_Function:
             1 - terminals
         )
 
-        for _, (action, new_q) in enumerate(zip(actions, updated_q_values)):
-            print((curr_q_values.shape))
-            print(f" action{action}")
-            print(curr_q_values[action])
-            curr_q_values[action] = new_q
+        for index, (action, new_q) in enumerate(zip(actions, updated_q_values)):
+            curr_q_values[index][action] = new_q
 
         # Fit the model using our corrected values.
         self.local_model.fit(

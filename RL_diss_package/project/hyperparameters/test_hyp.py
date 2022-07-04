@@ -6,16 +6,16 @@ test_hyp = {
     "EVALUATION":False,
     "CROP":(0,0,0,0),
 
-    "BUFFER_SIZE":1000,
-    "BATCH_SIZE":10,
+    "BUFFER_SIZE":500_000,
+    "BATCH_SIZE":32,
     # "EPs":2000,
     "ENV":"ALE/Pong",
-    "GAMMA":0.95,
+    "GAMMA":0.99,
 
     "REPLAY_FREQ":4,
-    "UPDATE_TARGET":1_000,
+    "UPDATE_TARGET":5_000,
 
-    "EPS_FRAMES_INIT":250_000,
+    "EPS_FRAMES_INIT":100_000,
     "EPS_FRAMES_INTER":1_000_000,
     "EPS_FRAMES_FINAL":5_000_000,
 
@@ -31,5 +31,5 @@ test_hyp = {
     "MAX_EP_ACTIONS":20_000, # Need to adjust this
     
     "RENDER_EVERY_N": 100_000,  # Render gif and save model every N frames
-    "UPDATE_EVERY_N": 10000,  # Print update every N episodes
+    "UPDATE_EVERY_N": 10_000,  # Print update every N episodes
 }
