@@ -33,9 +33,8 @@ class DQN():
 
         self.averaging_index = 0
 
-        # self.all_ep_rewards = []
-        # self.all_ep_lengths = []
 
+        self.log_path = None
         self.create_log()
 
     def train(self):
@@ -84,7 +83,7 @@ class DQN():
                         av_reward = np.mean(self.last_ep_rewards)
                         av_length = np.mean(self.last_ep_lengths)
                     print(f"Ep: {self.ep_i}, Frames: {self.frame_i}, Av reward: {av_reward}, Av ep length: {av_length}")
-                
+                    # and close and open csv writer to save progress
             
             if frames_since_render > self.hyp["RENDER_EVERY_N"]:
                 frames_since_render = 0
@@ -96,9 +95,6 @@ class DQN():
 
             self.averaging_index = (self.averaging_index + 1) % self.hyp["UPDATE_EVERY_N"]
             self.averaging_data_count = min(self.averaging_data_count + 1,self.hyp["UPDATE_EVERY_N"])
-
-            # self.all_ep_lengths.append(ep_length)
-            # self.all_ep_rewards.append(ep_reward)
 
             self.write_to_log(self.ep_i, self.frame_i, ep_reward, ep_length)
 
@@ -121,16 +117,20 @@ class DQN():
         self.log_dir = os.path.join(base_dir, "logs")
         now = datetime.now()
         current_time = now.strftime("%d-%m-%y-%H:%M:%S")
-        name = "./log" + "-" + str(current_time) +".csv"
-        path = os.path.join(self.log_dir, name) 
+        log_name = "./log" + "-" + str(current_time) +".csv"
+        self.log_path = os.path.join(self.log_dir, log_name) 
         
-        self.f = open(path, "w")
-        self.log = csv.writer(self.f)
+        # self.f = open(self.log_path, "w")
+        # self.log = csv.writer(self.f)
 
     # writes ep length and reward in log
     def write_to_log(self, episode, frames, ep_reward, ep_frame_count):
         row = [frames, episode, ep_reward, ep_frame_count]
-        self.log.writerow(row)
+        with open(self.log_path, 'a',newline="\n") as out:
+            csv_out = csv.writer(out, delimiter =',')
+            csv_out.writerow(row)
+            # file.write(row)
+            # file.write('\n')
 
     def create_eps_graph(self):
         raise(NotImplementedError)
