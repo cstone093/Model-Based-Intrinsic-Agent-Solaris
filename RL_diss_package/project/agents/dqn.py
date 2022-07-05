@@ -82,7 +82,9 @@ class DQN():
                     else:
                         av_reward = np.mean(self.last_ep_rewards)
                         av_length = np.mean(self.last_ep_lengths)
-                    print(f"Ep: {self.ep_i}, Frames: {self.frame_i}, Av reward: {av_reward}, Av ep length: {av_length}")
+                    now = datetime.now()
+                    current_time = now.strftime("%H:%M:%S")
+                    print(f"{current_time} Ep: {self.ep_i}, Frames: {self.frame_i}, Av reward: {av_reward}, Av ep length: {av_length}")
                     # and close and open csv writer to save progress
             
             if frames_since_render > self.hyp["RENDER_EVERY_N"]:

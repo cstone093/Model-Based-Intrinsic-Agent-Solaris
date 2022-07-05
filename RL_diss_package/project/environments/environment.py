@@ -16,6 +16,10 @@ class Environment:
         self.curr_top_state = None
 
         self.actions_space, self.observation_space = self.get_actions_and_obs_shape()
+        shape = self.env.observation_space.sample().shape
+
+        self.unprocessed_obs_height = shape[0]
+        self.unprocessed_obs_width = shape[1]
 
         self.last_lives = 3
         self.reset_done = False
@@ -29,8 +33,19 @@ class Environment:
 
     def process_state(self, state):
         # Converts the RGB input of (210, 160, 3) to grayscale (84, 84, 1)
+        if self.hyp["DO_CROP"]:
+            state = state[self.hyp["CROP"][0]: self.unprocessed_obs_height - self.hyp["CROP"][1], self.hyp["CROP"][2]: self.unprocessed_obs_width - self.hyp["CROP"][3]]
         if self.hyp["DO_RESCALE"]:
             state = Image.fromarray(state).convert("L").resize(self.hyp["RESCALE_DIMS"])
+
+        # Code to show processed states
+        # name = "./misc" + "-" + str(1) + ".gif"
+        # path = os.path.join(self.gif_dir, name)
+        # imageio.imwrite(
+        #     path,
+        #     state,
+        # )
+        
         return np.array(state, dtype=np.uint8)[..., np.newaxis]
 
     def reset(self):
