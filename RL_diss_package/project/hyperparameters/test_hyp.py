@@ -7,7 +7,7 @@ test_hyp = {
     "CROP":(20,0,0,0),
 
     "BUFFER_SIZE":500_000,
-    "BATCH_SIZE":64,
+    "BATCH_SIZE":32,
     # "EPs":2000,
     "ENV":"PongDeterministic-v4",
     "GAMMA":0.97,
@@ -15,9 +15,9 @@ test_hyp = {
     "REPLAY_FREQ":4,
     "UPDATE_TARGET":10_000,
 
-    "EPS_FRAMES_INIT":40_000,
+    "EPS_FRAMES_INIT":50_000,
     "EPS_FRAMES_INTER":1_000_000,
-    "EPS_FRAMES_FINAL":5_000_000,
+    "EPS_FRAMES_FINAL":2_000_000,
 
     "EPS_STEPS_INIT":1,
     "EPS_STEPS_INTER":0.1,
