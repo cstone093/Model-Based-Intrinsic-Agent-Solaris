@@ -48,7 +48,7 @@ class DQN():
             terminal = False
             self.stacked_state, self.top_state  = self.env.reset()
             action_i = 0
-            while not terminal and action_i < self.hyp["MAX_EP_ACTIONS"]:
+            while not terminal and action_i <= self.hyp["MAX_EP_ACTIONS"]:
                 action = self.policy.choose_action(self.stacked_state,self.frame_i)
                 new_stacked_state, reward, terminal, _, new_top_state = self.env.step(action)
 
@@ -65,11 +65,8 @@ class DQN():
                 frames_since_render += 1
                 # Replay from memory
                 if  self.frame_i % self.hyp["REPLAY_FREQ"] == 0 and self.frame_i > self.hyp["EPS_FRAMES_INIT"]:
-                    try:
-                        states,actions,rewards,new_states,terminals = self.memory.sample()
-                        self.policy.learn(states,actions,rewards,new_states,terminals)
-                    except:
-                        pass
+                    states,actions,rewards,new_states,terminals = self.memory.sample()
+                    self.policy.learn(states,actions,rewards,new_states,terminals)
                 
                 # update target
                 if  self.frame_i % self.hyp["UPDATE_TARGET"] == 0 and self.frame_i > self.hyp["EPS_FRAMES_INIT"]:
@@ -84,13 +81,16 @@ class DQN():
                         av_length = np.mean(self.last_ep_lengths)
                     now = datetime.now()
                     current_time = now.strftime("%H:%M:%S")
-                    print(f"{current_time} Ep: {self.ep_i}, Frames: {self.frame_i}, Av reward: {av_reward}, Av ep length: {av_length}")
-                    # and close and open csv writer to save progress
+                    print(f"{current_time} Ep: {self.ep_i},"
+                    + f" Frames: {self.frame_i},"
+                    + f" Av reward: {av_reward},"
+                    + f" Av ep length: {av_length},"
+                    + f" Epsilon: {self.policy.get_epsilon(self.frame_i)}")
             
             if frames_since_render > self.hyp["RENDER_EVERY_N"]:
                 frames_since_render = 0
                 self.env.save_ep_gif(self.ep_i)
-
+                self.env.save_ep_gif_processed(self.ep_i)
 
             self.last_ep_rewards[self.averaging_index] = ep_reward
             self.last_ep_lengths[self.averaging_index] = ep_length
@@ -106,9 +106,9 @@ class DQN():
         # call for NN and RB to save their state as well
         raise(NotImplementedError)
     
-    def clip_reward(self,reward):
-        reward = max(reward,-1)
-        reward = min(reward,1)
+    # def clip_reward(self,reward):
+    #     reward = max(reward,-1)
+    #     reward = min(reward,1)
     
     def create_lr_graph(self):
         raise(NotImplementedError)

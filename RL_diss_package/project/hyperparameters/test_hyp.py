@@ -4,13 +4,14 @@ test_hyp = {
     "DO_RESCALE":True,
     "RESCALE_DIMS":(84,84),
     "EVALUATION":False,
-    "CROP":(20,0,0,0),
+    "CROP":(30,15,0,0),
+    "SEED":0,
 
     "BUFFER_SIZE":500_000,
     "BATCH_SIZE":32,
     # "EPs":2000,
     "ENV":"PongDeterministic-v4",
-    "GAMMA":0.97,
+    "GAMMA":0.99,
 
     "REPLAY_FREQ":4,
     "UPDATE_TARGET":10_000,
@@ -24,7 +25,7 @@ test_hyp = {
     "EPS_STEPS_FINAL":0.01,
     # "CONV_LAYERS":5,
     # "DROPOUT":0.2,
-    "INIT_LEARNING_RATE":0.00025,
+    "INIT_LEARNING_RATE":0.00025, #Mnih et al
 
     # "NUM_STEPS": 7500,
     "STACK_SIZE": 4,

@@ -3,8 +3,7 @@ import tensorflow as tf
 import numpy as np
 from keras.models import Sequential
 from keras.layers import InputLayer, Dense, Activation, Conv2D, Dropout, MaxPooling2D, Flatten
-from keras.optimizers import adam_v2
-from keras.utils.vis_utils import plot_model
+from keras.optimizers import adam_v2, rmsprop_v2
 
 class Q_Value_Function:
 
@@ -13,6 +12,7 @@ class Q_Value_Function:
         self.A_SIZE = a_size
         self.S_SIZE = s_size
         self.learning_rate = hyp["INIT_LEARNING_RATE"]
+        np.random.seed(self.hyp["SEED"])
 
         self.local_model = self._create_CNN()
         self.target_model = self._create_CNN()
@@ -56,7 +56,7 @@ class Q_Value_Function:
 
         model.compile(
             loss=tf.keras.losses.Huber(),
-            optimizer=adam_v2.Adam(learning_rate=self.learning_rate),
+            optimizer=rmsprop_v2.RMSProp(learning_rate=self.learning_rate),
             metrics=["accuracy"],
         )
         return model

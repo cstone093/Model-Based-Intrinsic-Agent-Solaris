@@ -29,12 +29,12 @@ class Replay_Buffer():
   # to separate buffers
   def add_exp(self,exp):
     st,at,rt,stprime,term = exp
-    self._states[self._new_index] = st.squeeze()
+    self._states[self._new_index, ...] = st.squeeze()
     self._actions[self._new_index] = at
     self._rewards[self._new_index] = rt
     self._terminals[self._new_index] = term
 
-    self._exp_count = max(self._exp_count, self._new_index + 1)
+    self._exp_count = np.max([self._exp_count, self._new_index + 1])
     self._new_index = (self._new_index + 1) % self.BUFFER_SIZE
 
 
