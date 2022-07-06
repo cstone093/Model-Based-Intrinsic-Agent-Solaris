@@ -6,6 +6,7 @@ test_hyp = {
     "EVALUATION":False,
     "CROP":(30,15,0,0),
     "SEED":0,
+    "N":10,
 
     "BUFFER_SIZE":500_000,
     "BATCH_SIZE":32,
@@ -17,7 +18,7 @@ test_hyp = {
     "UPDATE_TARGET":10_000,
 
     "EPS_FRAMES_INIT":50_000,
-    "EPS_FRAMES_INTER":1_000_000,
+    "EPS_FRAMES_INTER":200_000,
     "EPS_FRAMES_FINAL":2_000_000,
 
     "EPS_STEPS_INIT":1,

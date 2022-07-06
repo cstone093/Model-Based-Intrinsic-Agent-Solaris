@@ -1,3 +1,4 @@
+from math import gamma
 from random import randint, random
 import numpy as np
 from datetime import datetime 
@@ -19,7 +20,7 @@ class DQN():
         self.env = Environment(hyp=self.hyp)
         self.ACTIONS, self.STATE_SHAPE = self.env.get_actions_and_obs_shape()
         self.policy = Q_Value_Function(hyp=self.hyp,a_size=self.ACTIONS,s_size=self.STATE_SHAPE)
-        self.memory = Replay_Buffer(self.hyp["BUFFER_SIZE"],self.hyp["BATCH_SIZE"],self.hyp["STACK_SIZE"])
+        self.memory = Replay_Buffer(self.hyp["BUFFER_SIZE"],self.hyp["BATCH_SIZE"],self.hyp["STACK_SIZE"],gamma=self.hyp["GAMMA"],N=self.hyp["N"])
         self.frame_i = 0
         self.ep_i = 0
         self.stacked_state = None

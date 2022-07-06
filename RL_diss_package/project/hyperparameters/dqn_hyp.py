@@ -7,6 +7,8 @@ solaris_hyp = {
     "CROP":(0,0,0,0),
     "SEED":0,
 
+    "N":2,
+
     "BUFFER_SIZE":1_000_000,
     "BATCH_SIZE":32,
     # "EPs":2000,

@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Replay_Buffer():
-  def __init__(self,buffer_size,batch_size,stack_size):
+  def __init__(self,buffer_size,batch_size,stack_size,gamma,N):
     assert batch_size > 0, "Batch size must be greater than zero"
     assert buffer_size > 0, "Buffer size must be greater than zero"
     assert stack_size > 0, "Stack size must be greater than zero"
@@ -15,6 +15,7 @@ class Replay_Buffer():
     self.BATCH_SIZE = batch_size
     self.STACK_SIZE = stack_size
     self.BUFFER_SIZE = buffer_size
+    self.GAMMA = gamma
 
     self._states = np.empty((self.BUFFER_SIZE,84,84),dtype=np.uint8)
     self._rewards = np.empty(self.BUFFER_SIZE,dtype=np.float32)
@@ -23,6 +24,8 @@ class Replay_Buffer():
 
     self._exp_count = 0
     self._new_index = 0
+
+    self.N = N # NEED TO SET THIS
 
   # adds new experiences into the buffer from the format
   # [st,at,rt,stprime,term]
@@ -65,20 +68,38 @@ class Replay_Buffer():
         # select randomly, a state from the processed list of  options
         chosen_exp = np.random.choice(index_options, self.BATCH_SIZE)
 
-        ss = np.array(
-            [self._states[exp - self.STACK_SIZE : exp, ...] for exp in chosen_exp]
-        )
-        s_primes = np.array(
-            [self._states[exp - self.STACK_SIZE + 1 : exp + 1, ...] for exp in chosen_exp]
-        )
+        # N-step from github.com/leonjovanovic/drl-dqn-atari-pong
+        ss = []
+        actions = []
+        s_primes = []
+        rewards = []
+        dones = []
 
-        # Transpose states from (batch_size, stack_size, 84, 84) to (batch_size, 84, 84, stack_size)
+        for exp in chosen_exp:        
+          i = 0
+          total_reward = 0
+          
+          for i in range(self.N):
+            total_reward += self._rewards[(exp + i) % self.BUFFER_SIZE] * (self.GAMMA ** i)
+            new_done = self._terminals[(exp + i) % self.BUFFER_SIZE]
+            new_next_state = self._states[exp - self.STACK_SIZE : exp, ...]
+            if self._terminals[(exp + i) % self.BUFFER_SIZE]:
+                i = self.N
+
+          ss.append(self._states[exp - self.STACK_SIZE : exp, ...])
+          actions.append(self._actions[exp])
+          s_primes.append(new_next_state)
+          rewards.append(total_reward)
+          dones.append(new_done)
+    
+
+         # Transpose states from (batch_size, stack_size, 84, 84) to (batch_size, 84, 84, stack_size)
         return (
             np.transpose(ss, axes=(0, 2, 3, 1)),
-            self._actions[chosen_exp],
-            self._rewards[chosen_exp],
+            np.array(self._actions[chosen_exp],dtype=np.int8),
+            np.array(rewards,dtype=np.float32),
             np.transpose(s_primes, axes=(0, 2, 3, 1)),
-            self._terminals[chosen_exp],
+            np.array(dones,dtype=np.bool8),
         )
     
   def save_state(self):
