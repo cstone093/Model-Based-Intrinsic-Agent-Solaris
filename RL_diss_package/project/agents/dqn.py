@@ -49,7 +49,7 @@ class DQN():
             self.stacked_state, self.top_state  = self.env.reset()
             action_i = 0
             while not terminal and action_i < self.hyp["MAX_EP_ACTIONS"]:
-                action = self.policy.choose_action(self.stacked_state)
+                action = self.policy.choose_action(self.stacked_state,self.frame_i)
                 new_stacked_state, reward, terminal, _, new_top_state = self.env.step(action)
 
                 ep_reward += reward
@@ -134,9 +134,6 @@ class DQN():
             # file.write(row)
             # file.write('\n')
 
-    def create_eps_graph(self):
-        raise(NotImplementedError)
-
     def display_progress(self):
         raise(NotImplementedError)
 
@@ -153,4 +150,3 @@ class DQN():
         # load to NN and RB as well
         # set frame_no count etc
         raise(NotImplementedError)
-        
