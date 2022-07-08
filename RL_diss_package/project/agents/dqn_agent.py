@@ -64,6 +64,7 @@ class DQN():
 
                 self.frame_i += 1
                 frames_since_render += 1
+                
                 # Replay from memory
                 if  self.frame_i % self.hyp["REPLAY_FREQ"] == 0 and self.frame_i > self.hyp["EPS_FRAMES_INIT"]:
                     states,actions,rewards,new_states,terminals = self.memory.sample()
@@ -71,6 +72,7 @@ class DQN():
                 
                 # update target
                 if  self.frame_i % self.hyp["UPDATE_TARGET"] == 0 and self.frame_i > self.hyp["EPS_FRAMES_INIT"]:
+                    print("updating target")
                     self.policy.update_target_model()
 
                 if self.frame_i % self.hyp["UPDATE_EVERY_N"] == 0:

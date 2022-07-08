@@ -2,7 +2,7 @@ from tabnanny import verbose
 import tensorflow as tf
 import numpy as np
 from keras.models import Sequential
-from keras.layers import InputLayer, Dense, Activation, Conv2D, Dropout, MaxPooling2D, Flatten
+from keras.layers import InputLayer, Dense, Activation, Conv2D, Dropout, MaxPooling2D, Flatten, Rescaling
 from keras.optimizers import adam_v2, rmsprop_v2
 
 class Q_Value_Function:
@@ -37,22 +37,25 @@ class Q_Value_Function:
         
     # Creates a CNN for the policy
     def _create_CNN(self):
+        initializer = tf.keras.initializers.HeNormal
 
         model = Sequential()
         model.add(InputLayer(input_shape=self.S_SIZE))
 
-        model.add(Conv2D(32,(8, 8),strides=4,kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2.0),))
+        model.add(Rescaling(scale=1.0/255))
+
+        model.add(Conv2D(32,(8, 8),strides=4,kernel_initializer=initializer))
         model.add(Activation("relu"))
 
-        model.add(Conv2D(64,(4, 4),strides=2,kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2.0),))
+        model.add(Conv2D(64,(4, 4),strides=2,kernel_initializer=initializer))
         model.add(Activation("relu"))
 
-        model.add(Conv2D(64,(3, 3),strides=1,kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2.0),))
+        model.add(Conv2D(64,(3, 3),strides=1,kernel_initializer=initializer))
         model.add(Activation("relu"))
 
         model.add(Flatten())
-        model.add(Dense(512, kernel_initializer=tf.keras.initializers.VarianceScaling(scale=2.0)))
-        model.add(Dense(self.A_SIZE, activation="linear"))
+        model.add(Dense(512, kernel_initializer=initializer))
+        model.add(Dense(self.A_SIZE, activation="linear",kernel_initializer=initializer))
 
         model.compile(
             loss=tf.keras.losses.Huber(),
@@ -111,8 +114,7 @@ class Q_Value_Function:
         return weights
 
     def update_target_model(self):
-        weights = self.get_weights(self.local_model)
-        self.set_weights(self.target_model,weights)
+        self.target_model.set_weights(self.local_model.get_weights())
 
     def save_state(self):
         raise(NotImplementedError)
