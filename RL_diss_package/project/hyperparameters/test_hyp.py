@@ -6,13 +6,13 @@ test_hyp = {
     "EVALUATION":False,
     "CROP":(32,15,0,0),
     "SEED":0,
-    "N":20,
+    "N":2,
 
     "BUFFER_SIZE":100_000,
     "BATCH_SIZE":32,
     # "EPs":2000,
     "ENV":"PongDeterministic-v4",
-    "GAMMA":0.99,
+    "GAMMA":0.95,
 
     "REPLAY_FREQ":4,
     "UPDATE_TARGET":10_000,

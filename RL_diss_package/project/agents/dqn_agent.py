@@ -72,7 +72,6 @@ class DQN():
                 
                 # update target
                 if  self.frame_i % self.hyp["UPDATE_TARGET"] == 0 and self.frame_i > self.hyp["EPS_FRAMES_INIT"]:
-                    print("updating target")
                     self.policy.update_target_model()
 
                 if self.frame_i % self.hyp["UPDATE_EVERY_N"] == 0:
