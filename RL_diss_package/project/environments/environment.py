@@ -38,14 +38,6 @@ class Environment:
             state = state[self.hyp["CROP"][0]: self.unprocessed_obs_height - self.hyp["CROP"][1], self.hyp["CROP"][2]: self.unprocessed_obs_width - self.hyp["CROP"][3]]
         if self.hyp["DO_RESCALE"]:
             state = Image.fromarray(state).convert("L").resize(self.hyp["RESCALE_DIMS"])
-
-        # Code to show processed states
-        # name = "./misc" + "-" + str(1) + ".gif"
-        # path = os.path.join(self.gif_dir, name)
-        # imageio.imwrite(
-        #     path,
-        #     state,
-        # )
         
         return np.array(state, dtype=np.uint8)[..., np.newaxis]
 

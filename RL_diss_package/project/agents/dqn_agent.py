@@ -40,8 +40,7 @@ class DQN():
 
     def train(self):
         # learn until max number of frames reached
-        eps_since_update = 0
-        frames_since_render = 0
+        frames_since_render = self.hyp["RENDER_EVERY_N"]
         while self.frame_i < self.hyp["EPS_FRAMES_FINAL"]:
             ep_reward=0
             ep_length=0
@@ -58,7 +57,7 @@ class DQN():
                 ep_length += 1
 
                 # Experience in form [top_state,action,reward,new_top_state,term]
-                self.memory.add_exp([self.top_state,action,reward,new_top_state,terminal])
+                self.memory.add_exp(self.stacked_state,action,reward,new_stacked_state,terminal)
                 self.top_state = new_top_state
                 self.stacked_state = new_stacked_state
 

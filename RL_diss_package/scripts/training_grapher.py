@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import time
 import sys
 import numpy as np
-from sklearn.linear_model import LinearRegression
 
 def read_rewards(csv_dir):
     #  check that there is arg

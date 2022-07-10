@@ -8,25 +8,25 @@ test_hyp = {
     "SEED":0,
     "N":2,
 
-    "BUFFER_SIZE":100_000,
+    "BUFFER_SIZE":10_000,
     "BATCH_SIZE":32,
     # "EPs":2000,
     "ENV":"PongDeterministic-v4",
-    "GAMMA":0.95,
+    "GAMMA":0.99,
 
     "REPLAY_FREQ":4,
-    "UPDATE_TARGET":10_000,
+    "UPDATE_TARGET":1_000,
 
-    "EPS_FRAMES_INIT":50_000,
-    "EPS_FRAMES_INTER":500_000,
-    "EPS_FRAMES_FINAL":2_000_000,
+    "EPS_FRAMES_INIT":10_000,
+    "EPS_FRAMES_INTER":200_000,
+    "EPS_FRAMES_FINAL":1_000_000,
 
     "EPS_STEPS_INIT":1,
     "EPS_STEPS_INTER":0.1,
     "EPS_STEPS_FINAL":0.01,
     # "CONV_LAYERS":5,
     # "DROPOUT":0.2,
-    "INIT_LEARNING_RATE":0.00025,
+    "INIT_LEARNING_RATE":0.0001,
 
     # "NUM_STEPS": 7500,
     "STACK_SIZE": 4,
