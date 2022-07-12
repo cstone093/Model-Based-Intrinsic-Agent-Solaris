@@ -4,6 +4,7 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import InputLayer, Dense, Activation, Conv2D, Dropout, MaxPooling2D, Flatten, Rescaling
 from keras.optimizers import adam_v2, rmsprop_v2
+import os
 
 class Q_Value_Function:
 
@@ -117,9 +118,14 @@ class Q_Value_Function:
     def update_target_model(self):
         self.target_model.set_weights(self.local_model.get_weights())
 
-    def save_state(self):
-        raise(NotImplementedError)
+    def save_state(self,directory):
+        filename = os.path.join(directory, "weights.hdf5")
+        self.local_model.save_weights(filename)
+        print(f"Agent network weights were saved in: {filename}")
 
 
-    def load_state(self):
-        raise(NotImplementedError)
+    def load_state(self,directory):
+        filename = os.path.join(directory, "weights.hdf5")
+        self.local_model.load_weights(filename)
+        self.update_target_model()
+        print(f"Agent network weights were loaded from: {filename}")

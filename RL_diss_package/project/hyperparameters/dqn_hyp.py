@@ -34,7 +34,8 @@ solaris_hyp = {
     "STACK_SIZE": 4,
     "MAX_EP_ACTIONS":40_000, # Need to adjust this
     
-    "RENDER_EVERY_N": 100000,  # Render gif and save model every N frames
-    "UPDATE_EVERY_N": 10000,  # Print update every N episodes
+    "RENDER_EVERY_N": 50,  # Render gif and save model every N episodes
+    "UPDATE_EVERY_N": 10,  # Print update every N episodes
+    "SAVE_EVERY_N": 100, # Save every N episodes
 }
 

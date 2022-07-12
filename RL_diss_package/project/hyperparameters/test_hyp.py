@@ -32,6 +32,7 @@ test_hyp = {
     "STACK_SIZE": 4,
     "MAX_EP_ACTIONS":20_000, # Need to adjust this
     
-    "RENDER_EVERY_N": 50_000,  # Render gif and save model every N frames
-    "UPDATE_EVERY_N": 10_000,  # Print update every N episodes
+    "RENDER_EVERY_N": 50,  # Render gif and save model every N episodes
+    "UPDATE_EVERY_N": 5,  # Print update every N episodes
+    "SAVE_EVERY_N": 50, # Save every N episodes
 }

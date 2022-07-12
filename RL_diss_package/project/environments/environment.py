@@ -119,6 +119,3 @@ class Environment:
                 fps=30,
             )
             print(f"Episode {ep_no} gif created")
-
-    def save_state(self):
-        raise(NotImplementedError)
