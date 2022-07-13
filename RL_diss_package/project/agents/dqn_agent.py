@@ -18,7 +18,6 @@ class DQN():
         self.policy = Q_Value_Function(hyp=self.hyp,a_size=self.ACTIONS,s_size=self.STATE_SHAPE)
         self.memory = Replay_Buffer(self.hyp["BUFFER_SIZE"],self.hyp["BATCH_SIZE"],self.hyp["STACK_SIZE"])
 
-
         self.stacked_state = None
         self.top_state = None
 
@@ -40,7 +39,6 @@ class DQN():
 
     def train(self):
         # learn until max number of frames reached
-        frames_since_render = self.hyp["RENDER_EVERY_N"]
         while self.frame_i < self.hyp["EPS_FRAMES_FINAL"]:
             ep_reward=0
             ep_length=0
@@ -95,11 +93,13 @@ class DQN():
 
             self.write_to_log(self.ep_i, self.frame_i, ep_reward, ep_length)
 
-            if self.ep_i % self.hyp["SAVE_EVERY_N"] == 0:
-                self.log_state() 
-
-            self.ep_i += 1
             self.env.clear_ep_buffer()
+
+            if self.ep_i % self.hyp["SAVE_EVERY_N"] == 0:
+                self.ep_i += 1
+                self.log_state() 
+            else:
+                self.ep_i += 1
     
     # creates log for ep length and rewards for graphing
     def create_log(self):
@@ -130,7 +130,7 @@ class DQN():
     def read_log_state(self,directory):
         # load NN and RB as well
         self.policy.load_state(directory)
-        self.memory.load_state(directory)
+        self.memory.load_state(directory,self.STATE_SHAPE)
         self.load_state(directory)
 
     def save_state(self,directory):
@@ -150,11 +150,11 @@ class DQN():
         i=0
         for row in reader:
             if i==0:
+                self.log_path = row[0]
+            elif i==1:
                 self.frame_i, self.ep_i, self.averaging_index = int(row[0]), int(row[1]), int(row[2])
-            if i==1:
-                self.log_dir = row[0]
             else:
-                self.last_ep_lengths[i-1], self.last_ep_rewards[i-1] = float(row[0]), float(row[1])
+                self.last_ep_lengths[i-2], self.last_ep_rewards[i-2] = float(row[0]), float(row[1])
             i+=1
         print(f"Successfully loaded agent from {log_path}")
 
