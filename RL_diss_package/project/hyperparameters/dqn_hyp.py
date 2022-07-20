@@ -38,4 +38,3 @@ solaris_hyp = {
     "UPDATE_EVERY_N": 10,  # Print update every N episodes
     "SAVE_EVERY_N": 100, # Save every N episodes
 }
-
