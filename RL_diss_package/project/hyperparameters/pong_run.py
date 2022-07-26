@@ -1,5 +1,5 @@
 # hyp from https://github.com/bhctsntrk/OpenAIPong-DQN/blob/master/OpenAIPong_DQN.ipynb
-test_hyp = {
+pong = {
     "DO_CROP":True,
     "DO_RESCALE":True,
     "RESCALE_DIMS":(84,84),

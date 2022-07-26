@@ -1,4 +1,4 @@
-from tabnanny import verbose
+
 import tensorflow as tf
 import numpy as np
 from keras.models import Sequential
@@ -7,7 +7,6 @@ from keras.optimizers import adam_v2, rmsprop_v2
 import os
 
 class Q_Value_Function:
-
     def __init__(self,hyp,a_size,s_size):
         self.hyp = hyp
         self.A_SIZE = a_size

@@ -14,9 +14,12 @@ class DQN():
     def __init__(self,hyp,from_file = None):
         self.hyp = hyp
         self.env = Environment(hyp=self.hyp)
+        print("Environent created")
         self.ACTIONS, self.STATE_SHAPE = self.env.get_actions_and_obs_shape()
         self.policy = Q_Value_Function(hyp=self.hyp,a_size=self.ACTIONS,s_size=self.STATE_SHAPE)
+        print("Policy created")
         self.memory = Replay_Buffer(self.hyp["BUFFER_SIZE"],self.hyp["BATCH_SIZE"],self.hyp["STACK_SIZE"])
+        print("Memory created")
 
         self.stacked_state = None
         self.top_state = None
