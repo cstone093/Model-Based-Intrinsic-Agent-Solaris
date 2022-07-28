@@ -64,22 +64,13 @@ class FM_Pixels(ForwardModel):
     def get_error(self,s,a,new_s):
         actions = np.zeros(shape=(1,self.A_SIZE),dtype=np.uint8)
         actions[0][a] = 1
-        print(actions)
         s = np.array([s],dtype=np.float32)
-        # sample = np.column_stack((a,*s))
-        # # print(len(sample))
-        # print(sample)
-        # print(sample.shape, sample)
-        # prediction = self.model.predict(sample)
         prediction = self.model.predict([s,actions],verbose=0)
-        # im = Image.fromarray(prediction[:,:,0])
-        # im.save("prediction.jpeg")
         L2_error = np.linalg.norm(prediction-new_s)
-        print(f"L2 error is: {L2_error}")
-
         return L2_error
 
     # Need to do some scaling here
     def pixels_reward(self,s,a,new_s):
         error = self.get_error(s,a,new_s)
-        return(error)
+        normalised_error = self.normalise_reward(error)
+        return(normalised_error)
